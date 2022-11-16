@@ -1,15 +1,26 @@
 import { Form, Stack, Row, Col, Button } from "react-bootstrap"
 import { Link } from "react-router-dom";
 import CreateableReactSelect from "react-select/creatable"
-import { FormEvent, useRef } from "react" 
+import { FormEvent, useRef, useState } from "react" 
+import { NoteData, Tag } from "./App"
 
+type NoteFormProps = {
+  onSubmit: (data: NoteData) => void 
+}
 
-export function NoteForm({ onSubmit }) {
+export function NoteForm({ onSubmit }: NoteFormProps ) {
   const titleRef = useRef<HTMLInputElement>(null)
   const markdownRef = useRef<HTMLTextAreaElement>(null)
+  const [selectedTags, setSelectedTags] = useState<Tag[]>([])
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault()
+    onSubmit({
+      // the ! lets typescript know we will never get null since we set form values to be required  
+      markdown: markdownRef.current!.value, 
+      title: titleRef.current!.value,
+      tags: []
+    })
   }
 
   return (
