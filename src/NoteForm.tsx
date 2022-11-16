@@ -1,27 +1,27 @@
-import { Form, Stack, Row, Col, Button } from "react-bootstrap"
+import { Form, Stack, Row, Col, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import CreateableReactSelect from "react-select/creatable"
-import { FormEvent, useRef, useState } from "react" 
-import { NoteData, Tag } from "./App"
+import CreateableReactSelect from "react-select/creatable";
+import { FormEvent, useRef, useState } from "react";
+import { NoteData, Tag } from "./App";
 
 type NoteFormProps = {
-  onSubmit: (data: NoteData) => void 
-}
+  onSubmit: (data: NoteData) => void;
+};
 
-export function NoteForm({ onSubmit }: NoteFormProps ) {
-  const titleRef = useRef<HTMLInputElement>(null)
-  const markdownRef = useRef<HTMLTextAreaElement>(null)
-  const [selectedTags, setSelectedTags] = useState<Tag[]>([])
+export function NoteForm({ onSubmit }: NoteFormProps) {
+  const titleRef = useRef<HTMLInputElement>(null);
+  const markdownRef = useRef<HTMLTextAreaElement>(null);
+  const [selectedTags, setSelectedTags] = useState<Tag[]>([]);
 
   const handleSubmit = (e: FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
     onSubmit({
-      // the ! lets typescript know we will never get null since we set form values to be required  
-      markdown: markdownRef.current!.value, 
+      // the ! lets typescript know we will never get null since we set form values to be required
+      markdown: markdownRef.current!.value,
       title: titleRef.current!.value,
-      tags: []
-    })
-  }
+      tags: [],
+    });
+  };
 
   return (
     <Form onSubmit={handleSubmit}>
@@ -30,13 +30,24 @@ export function NoteForm({ onSubmit }: NoteFormProps ) {
           <Col>
             <Form.Group controlId="title">
               <Form.Label>Title</Form.Label>
-              <Form.Control required ref={titleRef}/>
+              <Form.Control required ref={titleRef} />
             </Form.Group>
           </Col>
           <Col>
             <Form.Group controlId="tags">
               <Form.Label>Tags</Form.Label>
-              <CreateableReactSelect isMulti />
+              <CreateableReactSelect
+                value={selectedTags.map((tag) => {
+                  return { label: tag.label, value: tag.id };
+                })}
+                onChange={(tags) => {
+                    setSelectedTags(
+                      tags.map(tag => {
+                      return {label: tag.label, id: tag.value}
+                    }))
+                }}
+                isMulti
+              />
             </Form.Group>
           </Col>
         </Row>
